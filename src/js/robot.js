@@ -296,6 +296,40 @@ export function vectorSubtract (v1, v2) {
 
 
 /**
+ * Subtracts multiple vectors from the source vector. Expects vectors to be positively aligned.
+ * @param srcVector
+ * @param vectorArray
+ * @returns {*}
+ */
+export function subtractMultiple(srcVector, vectorArray) {
+  if (vectorArray.length === 0) {
+    return [srcVector];
+  }
+
+  let currentVector = vectorArray[0];
+
+  let subRes = vectorSubtract(srcVector, currentVector);
+
+  if (vectorArray.length === 1) { // We are done
+    return subRes;
+  }
+
+  if (subRes.length === 0) { // srcVector completely subtracted
+    return [];
+  }
+
+  if (subRes.length === 1) {
+    return subtractMultiple(subRes[0], vectorArray.slice(1));
+  }
+
+  // We got two vectors, gotta start over
+  let part1 = subtractMultiple(subRes[0], vectorArray.slice(1));
+  let part2 = subtractMultiple(subRes[1], vectorArray.slice(1));
+  return part1.concat(part2);
+}
+
+
+/**
  *
  * @param params [Object] Instruction for cleaning robot. Example:
  * {
@@ -317,4 +351,5 @@ export default {
   isVertical,
   calculateArea,
   vectorSubtract,
+  subtractMultiple,
 }
