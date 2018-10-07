@@ -33,6 +33,34 @@ export function relativeToAbsolute(startPosition, relativeMoves) {
 
 
 /**
+ * Aligns vectors to always point in positive direction
+ * @param vectorArray
+ * @returns [Object] An array of vectors
+ */
+export function alignVectors(vectorArray) {
+  return vectorArray.map(v => {
+    let av = {};
+
+    if (v.x1 < v.x2) {
+      av.x1 = v.x1;
+      av.x2 = v.x2;
+    } else {
+      av.x1 = v.x2;
+      av.x2 = v.x1;
+    }
+    if (v.y1 < v.y2) {
+      av.y1 = v.y1;
+      av.y2 = v.y2;
+    } else {
+      av.y1 = v.y2;
+      av.y2 = v.y1;
+    }
+    return av;
+  });
+}
+
+
+/**
  *
  * @param params [Object] Instruction for cleaning robot. Example:
  * {
@@ -49,5 +77,6 @@ function runCleaningRobot(params) {
 
 export default {
   runCleaningRobot,
-  relativeToAbsolute
+  relativeToAbsolute,
+  alignVectors,
 }
