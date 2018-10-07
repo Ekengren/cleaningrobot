@@ -1,1 +1,7 @@
-export default {}
+function runCleaningRobot() {
+
+}
+
+export default {
+  runCleaningRobot
+}
