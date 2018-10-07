@@ -5,7 +5,30 @@
  * @returns [Object] Returns an array of vector objects [{x1: integer, y1: integer, x2: integer, y2: integer}]
  */
 export function relativeToAbsolute(startPosition, relativeMoves) {
-  return [];
+  let currentPos = startPosition;
+
+  return relativeMoves.map(move => {
+    let vectorLength = Number.parseInt(move.match(/\d+/)[0], 10);
+    let absoluteVector;
+
+    if (move.match(/[NS]/) !== null) { // Test if vertical
+      absoluteVector = {
+        x1: currentPos.x,
+        y1: currentPos.y,
+        x2: currentPos.x,
+        y2: move.match(/[N]/) ? currentPos.y + vectorLength : currentPos.y - vectorLength
+      };
+    } else {
+      absoluteVector = {
+        x1: currentPos.x,
+        y1: currentPos.y,
+        x2: move.match(/[E]/) ? currentPos.x + vectorLength : currentPos.x - vectorLength,
+        y2: currentPos.y
+      };
+    }
+    currentPos = {x: absoluteVector.x2, y: absoluteVector.y2};
+    return absoluteVector;
+  });
 }
 
 
