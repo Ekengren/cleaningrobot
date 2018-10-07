@@ -1,5 +1,5 @@
 import robot from '../js/robot'
-import { expect } from './test-utils'
+import { expect, vEq } from './test-utils'
 
 expect('robot to have function "runCleaningRobot"', typeof robot.runCleaningRobot === 'function');
 
@@ -42,3 +42,23 @@ expect('function "isVertical" to return a boolean', typeof robot.isVertical({x1:
 
 expect('robot to have function "calculateArea"', typeof robot.calculateArea === 'function');
 expect('function "calculateArea" to return correct area', robot.calculateArea([{x1: 0, y1: 0, x2: 0, y2: 17}]) === 18);
+
+expect('robot to have function "vectorSubtract"', typeof robot.vectorSubtract === 'function');
+expect('function vectorSubtract to return the same vector if subtracting non overlapping vector', (function () {
+  let pVector = {x1:0, y1:0, x2:0, y2:10};
+  let nVector = {x1:3, y1:0, x2:3, y2:10};
+  let result = robot.vectorSubtract(pVector, nVector);
+  return vEq(result[0], pVector);
+})());
+expect('function vectorSubtract to return two vectors if the vectors overlap in the middle', (function () {
+  let pVector = {x1:3, y1:0, x2:3, y2:10};
+  let nVector = {x1:0, y1:6, x2:10, y2:6};
+  let result = robot.vectorSubtract(pVector, nVector);
+  return vEq(result[0], {x1:3, y1:0, x2:3, y2:5}) && vEq(result[1], {x1:3, y1:7, x2:3, y2:10});
+})());
+expect('function vectorSubtract to return an empty array if subtracting completely overlapping vector', (function () {
+  let pVector = {x1:3, y1:1, x2:3, y2:10};
+  let nVector = {x1:3, y1:0, x2:3, y2:17};
+  let result = robot.vectorSubtract(pVector, nVector);
+  return result.length === 0;
+})());
