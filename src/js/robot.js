@@ -330,6 +330,23 @@ export function subtractMultiple(srcVector, vectorArray) {
 
 
 /**
+ * Takes an array of vectors and return an array of vectors guaranteed not to overlap
+ * @param moveVectors
+ * @returns {Array}
+ */
+export function generateOptimalVectors(moveVectors) {
+  let nonOverlapVectors = [];
+
+  moveVectors.forEach(vector => {
+    let subtractedVectorArr = subtractMultiple(vector, nonOverlapVectors);
+
+    nonOverlapVectors = nonOverlapVectors.concat(subtractedVectorArr);
+  });
+  return nonOverlapVectors;
+}
+
+
+/**
  *
  * @param params [Object] Instruction for cleaning robot. Example:
  * {
@@ -352,4 +369,5 @@ export default {
   calculateArea,
   vectorSubtract,
   subtractMultiple,
+  generateOptimalVectors,
 }
