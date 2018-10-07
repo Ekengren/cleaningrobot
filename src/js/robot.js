@@ -71,6 +71,24 @@ export function isVertical (v) {
 
 
 /**
+ * Calculates total area for given vector array. Overlapped tiles are not considered.
+ * @param [Object] vectorArray an array of vectors
+ * @returns {Number} Total area
+ */
+export function calculateArea(vectorArray) {
+  let totalArea = vectorArray.reduce((memo, vector) => {
+    if (isVertical(vector)) {
+      return memo + vector.y2 - vector.y1;
+    } else {
+      return memo + vector.x2 - vector.x1;
+    }
+  }, 0);
+
+  return totalArea + 1; // Add one for start square
+}
+
+
+/**
  *
  * @param params [Object] Instruction for cleaning robot. Example:
  * {
@@ -90,4 +108,5 @@ export default {
   relativeToAbsolute,
   alignVectors,
   isVertical,
+  calculateArea,
 }
