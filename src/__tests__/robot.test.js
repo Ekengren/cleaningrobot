@@ -39,3 +39,6 @@ expect('function "alignVectors" to return an array aligned vectors', (function (
 
 expect('robot to have function "isVertical"', typeof robot.isVertical === 'function');
 expect('function "isVertical" to return a boolean', typeof robot.isVertical({x1: 0, y1: 0, x2: 0, y2: 17}) === 'boolean');
+
+expect('robot to have function "calculateArea"', typeof robot.calculateArea === 'function');
+expect('function "calculateArea" to return correct area', robot.calculateArea([{x1: 0, y1: 0, x2: 0, y2: 17}]) === 18);
