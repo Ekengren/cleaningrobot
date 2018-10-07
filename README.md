@@ -29,3 +29,13 @@ or through the console.
 
 Run the application and then point your browser to localhost:8080/testrunner.html. The test results are shown in the
 console.
+
+### Developing
+
+You can watch and automatically rebuild the main application and the test by running
+
+    npm run watch
+
+and
+
+    npm run watchtest

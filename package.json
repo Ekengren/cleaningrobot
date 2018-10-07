@@ -5,7 +5,9 @@
   "private": true,
   "scripts": {
     "build": "mkdir -p dist/js; ./node_modules/.bin/browserify src/js/robot.js -o dist/js/robot.js && cp src/index.html dist/ && cp -R src/css dist",
+    "watch": "mkdir -p dist/js; ./node_modules/.bin/watchify src/js/robot.js -o dist/js/robot.js -dv && cp src/index.html dist/ && cp -R src/css dist",
     "buildtest": "mkdir -p dist/__tests__;./node_modules/.bin/browserify src/__tests__/robot.test.js -o dist/__tests__/robot.test.js && cp src/testrunner.html dist/",
+    "watchtest": "mkdir -p dist/__tests__;./node_modules/.bin/watchify src/__tests__/robot.test.js -o dist/__tests__/robot.test.js -dv && cp src/testrunner.html dist/",
     "serve": "./node_modules/.bin/http-server dist -o"
   },
   "browserify": {
