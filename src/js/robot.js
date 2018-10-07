@@ -89,6 +89,213 @@ export function calculateArea(vectorArray) {
 
 
 /**
+ * Subtracts one vector from another, returning an array of 0, 1 or 2 vectors
+ * @param v1 Vector to subtract from
+ * @param v2 Vector to subtract with
+ * @returns [Object] An array of vector objects
+ */
+export function vectorSubtract (v1, v2) {
+  if (isVertical(v1) && isVertical(v2)) {
+    if (v1.x1 !== v2.x1) { // Does not share same x
+      return [v1];
+    }
+
+    if (v1.y1 > v2.y2) { // v2 below v1
+      return [v1];
+    }
+
+    if (v1.y2 < v2.y1) { // v2 above v1
+      return [v1];
+    }
+
+    if (v1.y2 > v2.y2 && v1.y1 > v2.y1) { // End of v2 covering start of v1
+      return [{
+        x1: v1.x1,
+        y1: v2.y2,
+        x2: v1.x2,
+        y2: v1.y2,
+      }];
+    }
+
+    if (v1.y1 < v2.y1 && v1.y2 < v2.y2) { // End of v1 covering start of v2
+      return [{
+        x1: v1.x1,
+        y1: v1.y1,
+        x2: v1.x2,
+        y2: v2.y1,
+      }];
+    }
+
+    if (v1.y1 >= v2.y1 && v1.y2 <= v2.y2) { // v2 completely covers v1
+      return [];
+    }
+
+    // v2 is in the middle of v1
+    return [
+      {
+        x1: v1.x1,
+        y1: v1.y1,
+        x2: v1.x1,
+        y2: v2.y1,
+      },
+      {
+        x1: v1.x1,
+        y1: v2.y2,
+        x2: v1.x1,
+        y2: v1.y2,
+      },
+    ];
+  } else  if (!isVertical(v1) && !isVertical(v2)) {
+    if (v1.y1 !== v2.y1) { // Does not share same x
+      return [v1];
+    }
+
+    if (v1.x1 > v2.x2) { // v2 below v1
+      return [v1];
+    }
+
+    if (v1.x2 < v2.x1) { // v2 above v1
+      return [v1];
+    }
+
+    if (v1.x2 > v2.x2 && v1.x1 > v2.x1) { // End of v2 covering start of v1
+      return [{
+        x1: v2.x2,
+        y1: v1.y1,
+        x2: v1.x2,
+        y2: v1.y1,
+      }];
+    }
+
+    if (v1.x1 < v2.x1 && v1.x2 < v2.x2) { // End of v1 covering start of v2
+      return [{
+        x1: v1.x1,
+        y1: v1.y1,
+        x2: v2.x1,
+        y2: v1.y1,
+      }];
+    }
+
+    if (v1.x1 >= v2.x1 && v1.x2 <= v2.x2) { // v2 completely covers v1
+      return [];
+    }
+
+    return [ // v1 completely covers v2
+      {
+        x1: v1.x1,
+        y1: v1.y1,
+        x2: v2.x1,
+        y2: v1.y1,
+      },
+      {
+        x1: v2.x2,
+        y1: v1.y1,
+        x2: v1.x2,
+        y2: v1.y1,
+      },
+    ];
+  } else {
+    if (isVertical(v1)) {
+      if (v2.x2 < v1.x1) { // v2 left of v1
+        return [v1];
+      }
+      if (v2.x1 > v1.x1) { // v2 right of v1
+        return [v1];
+      }
+      if (v2.y1 < v1.y1) { // v2 below of v1
+        return [v1];
+      }
+      if (v2.y1 > v1.y2) { // v2 above of v1
+        return [v1];
+      }
+
+      // They are crossing at exactly one square
+      if (v1.y1 === v2.y1) {// v2 covers start of v1 -> cut first square
+        return [{
+          x1: v1.x1,
+          y1: v1.y1 /*+ 1*/,
+          x2: v1.x1,
+          y2: v1.y2,
+        }]
+      }
+
+      if (v1.y2 === v2.y1) {// v2 covers end of v1 -> cut last square
+        return [{
+          x1: v1.x1,
+          y1: v1.y1,
+          x2: v1.x1,
+          y2: v1.y2 - 1,
+        }]
+      }
+
+      // Cut v1 in half
+      return [
+        {
+          x1: v1.x1,
+          y1: v1.y1,
+          x2: v1.x1,
+          y2: v2.y1 - 1,
+        },
+        {
+          x1: v1.x1,
+          y1: v2.y1 + 1,
+          x2: v1.x1,
+          y2: v1.y2,
+        }
+      ]
+    } else {
+      if (v1.x2 < v2.x1) { // v1 left of v2
+        return [v1];
+      }
+      if (v1.x1 > v2.x1) { // v1 right of v2
+        return [v1];
+      }
+      if (v1.y1 < v2.y1) { // v1 below of v2
+        return [v1];
+      }
+      if (v1.y1 > v2.y2) { // v1 above of v2
+        return [v1];
+      }
+      // They are crossing at exactly one square
+      if (v1.x1 === v2.x1) {// v2 covers start of v1 -> cut first square
+        return [{
+          x1: v1.x1 /*+ 1*/,
+          y1: v1.y1,
+          x2: v1.x2,
+          y2: v1.y2,
+        }]
+      }
+
+      if (v1.x2 === v2.x2) {// v2 covers end of v1 -> cut last square
+        return [{
+          x1: v1.x1,
+          y1: v1.y1,
+          x2: v2.x1 /*- 1*/,
+          y2: v1.y2,
+        }]
+      }
+
+      // Cut v1 in half
+      return [
+        {
+          x1: v1.x1,
+          y1: v2.y1,
+          x2: v2.x1 - 1,
+          y2: v1.y2,
+        },
+        {
+          x1: v2.x1 + 1,
+          y1: v1.y1,
+          x2: v1.x2,
+          y2: v1.y2,
+        }
+      ]
+    }
+  }
+}
+
+
+/**
  *
  * @param params [Object] Instruction for cleaning robot. Example:
  * {
@@ -109,4 +316,5 @@ export default {
   alignVectors,
   isVertical,
   calculateArea,
+  vectorSubtract,
 }
