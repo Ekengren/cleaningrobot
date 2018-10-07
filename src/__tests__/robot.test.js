@@ -79,3 +79,11 @@ expect('function subtractMultiple to return multiple vectors if subtracting over
   let result = robot.subtractMultiple(pVector, [nVector1, nVector2]);
   return result.length === 3;
 })());
+
+expect('robot to have function "generateOptimalVectors"', typeof robot.generateOptimalVectors === 'function');
+expect('function generateOptimalVectors to return non overlapping vectors from overlapping vectors', (function () {
+  let vector1 = {x1:5, y1:0, x2:10, y2:0};
+  let vector2 = {x1:0, y1:0, x2:10, y2:0};
+  let result = robot.generateOptimalVectors([vector1, vector2]);
+  return vEq(result[0], vector1) && vEq(result[1], {x1:0, y1:0, x2:5, y2:0});
+})());
