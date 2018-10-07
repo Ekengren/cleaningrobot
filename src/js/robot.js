@@ -61,6 +61,16 @@ export function alignVectors(vectorArray) {
 
 
 /**
+ * Returns true if given vector is vertical.
+ * @param v
+ * @returns {boolean}
+ */
+export function isVertical (v) {
+  return v.x1 === v.x2;
+}
+
+
+/**
  *
  * @param params [Object] Instruction for cleaning robot. Example:
  * {
@@ -79,4 +89,5 @@ export default {
   runCleaningRobot,
   relativeToAbsolute,
   alignVectors,
+  isVertical,
 }
