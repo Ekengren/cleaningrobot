@@ -2,11 +2,13 @@
 
 ## Getting set up
 
+Install node modules
+
+    npm install
+
 Build the project by running
 
     npm run build
-
-then serve the dist folder from a webserver.
 
 ### Preparing tests
 

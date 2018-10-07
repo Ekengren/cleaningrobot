@@ -1,0 +1,45 @@
+{
+  "name": "CleaningRobot",
+  "version": "1.0.0",
+  "description": "A simulation of a cleaning robot.",
+  "private": true,
+  "scripts": {
+    "build": "mkdir -p dist/js; ./node_modules/.bin/browserify src/js/robot.js -o dist/js/robot.js && cp src/index.html dist/ && cp -R src/css dist",
+    "buildtest": "./node_modules/.bin/browserify src/__tests__/robot.test.js -o dist/__tests__/robot.test.js",
+    "serve": "./node_modules/.bin/http-server dist -o"
+  },
+  "browserify": {
+    "transform": [
+      "babelify"
+    ]
+  },
+  "dependencies": {
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-vue-app": "^2.0.0",
+    "babelify": "^7.3.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.18.2",
+    "babel-preset-es2015": "^6.18.0",
+    "browserify": "^13.1.1",
+    "browserify-hmr": "^0.3.5",
+    "cross-env": "^3.1.3",
+    "envify": "^4.0.0",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.9.0",
+    "http-server": "^0.9.0",
+    "watchify": "^3.7.0"
+  },
+  "files": [
+    "CHANGELOG.md",
+    "package.json",
+    "dist/",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ekengren/cleaningrobot.git"
+  }
+}
