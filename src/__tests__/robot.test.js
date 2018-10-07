@@ -62,3 +62,20 @@ expect('function vectorSubtract to return an empty array if subtracting complete
   let result = robot.vectorSubtract(pVector, nVector);
   return result.length === 0;
 })());
+
+expect('robot to have function "subtractMultiple"', typeof robot.subtractMultiple === 'function');
+expect('function subtractMultiple to return the same vector if subtracting non overlapping vectors', (function () {
+  let pVector = {x1:0, y1:0, x2:0, y2:10};
+  let nVector1 = {x1:3, y1:0, x2:3, y2:10};
+  let nVector2 = {x1:4, y1:0, x2:4, y2:10};
+  let nVector3 = {x1:5, y1:0, x2:5, y2:10};
+  let result = robot.subtractMultiple(pVector, [nVector1, nVector2, nVector3]);
+  return vEq(result[0], pVector);
+})());
+expect('function subtractMultiple to return multiple vectors if subtracting overlapping vectors', (function () {
+  let pVector = {x1:0, y1:5, x2:10, y2:5};
+  let nVector1 = {x1:2, y1:0, x2:2, y2:10};
+  let nVector2 = {x1:6, y1:0, x2:6, y2:10};
+  let result = robot.subtractMultiple(pVector, [nVector1, nVector2]);
+  return result.length === 3;
+})());
