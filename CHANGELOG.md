@@ -12,6 +12,7 @@ Use list notation, and following prefixes:
 
 ### NEXT RELEASE
 
+- Bugfix: Updated build scripts. (be)
 - Refactor: Changed how vectors are handled. (be)
 - Feature: Added build watchers. (be)
 - Feature: Added first test. (be)
