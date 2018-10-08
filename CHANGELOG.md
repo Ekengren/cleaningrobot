@@ -1,7 +1,20 @@
-### 1.0.0
+Robot Cleaner Changes
+======================
 
-* Added build watchers
-* Added first test
-* Created simple test utility
-* Added basic structure
-* Added README
+Instructions:
+Use list notation, and following prefixes:
+
+- Feature - for any new features
+- Cleanup - any code removal or non visible maintenance change
+- Refactor - code refactoring, keeping same functionality
+- Bugfix - when fixing any major bug
+
+
+### NEXT RELEASE
+
+- Refactor: Changed how vectors are handled. (be)
+- Feature: Added build watchers. (be)
+- Feature: Added first test. (be)
+- Feature: Created simple test utility. (be)
+- Feature: Added basic structure. (be)
+- Feature: Added README. (be)

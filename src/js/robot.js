@@ -5,28 +5,50 @@
  * @returns [Object] Returns an array of vector objects [{x1: integer, y1: integer, x2: integer, y2: integer}]
  */
 export function relativeToAbsolute(startPosition, relativeMoves) {
-  let currentPos = startPosition;
+  let cursor = {x: startPosition.x + 0.5, y: startPosition.y + 0.5};
 
   return relativeMoves.map(move => {
     let vectorLength = Number.parseInt(move.match(/\d+/)[0], 10);
     let absoluteVector;
+    let nextCursor;
 
-    if (move.match(/[NS]/) !== null) { // Test if vertical
+    if (move.match(/[N]/) !== null) {
+      nextCursor = {x: cursor.x, y: cursor.y + vectorLength};
       absoluteVector = {
-        x1: currentPos.x,
-        y1: currentPos.y,
-        x2: currentPos.x,
-        y2: move.match(/[N]/) ? currentPos.y + vectorLength : currentPos.y - vectorLength
-      };
-    } else {
-      absoluteVector = {
-        x1: currentPos.x,
-        y1: currentPos.y,
-        x2: move.match(/[E]/) ? currentPos.x + vectorLength : currentPos.x - vectorLength,
-        y2: currentPos.y
+        x1: cursor.x,
+        y1: cursor.y + 0.5,
+        x2: cursor.x,
+        y2: cursor.y + vectorLength + 0.5
       };
     }
-    currentPos = {x: absoluteVector.x2, y: absoluteVector.y2};
+    if (move.match(/[S]/) !== null) {
+      nextCursor = {x: cursor.x, y: cursor.y - vectorLength};
+      absoluteVector = {
+        x1: cursor.x,
+        y1: cursor.y - 0.5,
+        x2: cursor.x,
+        y2: cursor.y - vectorLength - 0.5
+      };
+    }
+    if (move.match(/[E]/) !== null) {
+      nextCursor = {x: cursor.x + vectorLength, y: cursor.y};
+      absoluteVector = {
+        x1: cursor.x + 0.5,
+        y1: cursor.y,
+        x2: cursor.x + vectorLength + 0.5,
+        y2: cursor.y
+      };
+    }
+    if (move.match(/[W]/) !== null) {
+      nextCursor = {x: cursor.x - vectorLength, y: cursor.y};
+      absoluteVector = {
+        x1: cursor.x - 0.5,
+        y1: cursor.y,
+        x2: cursor.x - vectorLength - 0.5,
+        y2: cursor.y
+      };
+    }
+    cursor = nextCursor;
     return absoluteVector;
   });
 }
@@ -84,7 +106,7 @@ export function calculateArea(vectorArray) {
     }
   }, 0);
 
-  return totalArea + 1; // Add one for start square
+  return totalArea;
 }
 
 
@@ -96,88 +118,76 @@ export function calculateArea(vectorArray) {
  */
 export function vectorSubtract (v1, v2) {
   if (isVertical(v1) && isVertical(v2)) {
-    if (v1.x1 !== v2.x1) { // Does not share same x
+    if (v1.x1 !== v2.x1 || // Does not share same x
+      v1.y1 >= v2.y2 ||    // v2 below v1
+      v1.y2 <= v2.y1) {    // v2 above v1
       return [v1];
     }
 
-    if (v1.y1 > v2.y2) { // v2 below v1
-      return [v1];
+    if (v2.x1 <= v1.x1 && v2.x2 >= v1.x2) { // v2 completely covers v1
+      return [];
     }
 
-    if (v1.y2 < v2.y1) { // v2 above v1
-      return [v1];
-    }
+    if (v1.y1 < v2.y2 && v2.y1 <= v1.y1) { // Start of v1 covered by end of v2
+      return [{                            //  1           1
+        x1: v1.x1,                         //  1           1
+        y1: v2.y2,                         //  1  2        1 2
+        x2: v1.x2,                         //  1  2   or   1 2
+        y2: v1.y2,                         //  1  2        1 2
+      }];                                  //     2
+    }                                      //     2
 
-    if (v1.y2 > v2.y2 && v1.y1 > v2.y1) { // End of v2 covering start of v1
-      return [{
-        x1: v1.x1,
-        y1: v2.y2,
-        x2: v1.x2,
-        y2: v1.y2,
-      }];
-    }
+    if (v1.y2 > v2.y1 && v2.y2 >= v1.y2) { // Start of v2 covering end of v1
+      return [{                            //    2
+        x1: v1.x1,                         //    2
+        y1: v1.y1,                         //  1 2        1 2
+        x2: v1.x2,                         //  1 2   or   1 2
+        y2: v2.y1,                         //  1 2        1 2
+      }];                                  //  1          1
+    }                                      //  1          1
 
-    if (v1.y1 < v2.y1 && v1.y2 < v2.y2) { // End of v1 covering start of v2
-      return [{
-        x1: v1.x1,
-        y1: v1.y1,
-        x2: v1.x2,
-        y2: v2.y1,
-      }];
-    }
-
-    if (v1.y1 >= v2.y1 && v1.y2 <= v2.y2) { // v2 completely covers v1
+    if (v2.y1 <= v1.y1 && v2.y2 >= v1.y2) { // v2 completely covers v1
       return [];
     }
 
     // v2 is in the middle of v1
     return [
       {
-        x1: v1.x1,
-        y1: v1.y1,
-        x2: v1.x1,
-        y2: v2.y1,
-      },
-      {
-        x1: v1.x1,
-        y1: v2.y2,
-        x2: v1.x1,
-        y2: v1.y2,
+        x1: v1.x1,   //  1
+        y1: v1.y1,   //  1
+        x2: v1.x1,   //  1 2
+        y2: v2.y1,   //  1 2
+      },             //  1 2
+      {              //  1 2
+        x1: v1.x1,   //  1 2
+        y1: v2.y2,   //  1
+        x2: v1.x1,   //  1
+        y2: v1.y2,   //  1
       },
     ];
   } else  if (!isVertical(v1) && !isVertical(v2)) {
-    if (v1.y1 !== v2.y1) { // Does not share same x
+    if (v1.y1 !== v2.y1 || // Does not share same y
+      v2.x2 <= v1.x1 ||    // v2 to the left of v1
+      v1.x2 <= v2.x1) {    // v1 to the left of v2
       return [v1];
     }
 
-    if (v1.x1 > v2.x2) { // v2 below v1
-      return [v1];
+    if (v1.x1 < v2.x2 && v2.x1 <= v1.x1) { // End of v2 covering start of v1
+      return [{       //
+        x1: v2.x2,    //
+        y1: v1.y1,    //   222222                  222
+        x2: v1.x2,    //      1111111      or      11111111
+        y2: v1.y2,    //
+      }];             //
     }
 
-    if (v1.x2 < v2.x1) { // v2 above v1
-      return [v1];
-    }
-
-    if (v1.x2 > v2.x2 && v1.x1 > v2.x1) { // End of v2 covering start of v1
-      return [{
-        x1: v2.x2,
-        y1: v1.y1,
-        x2: v1.x2,
-        y2: v1.y1,
-      }];
-    }
-
-    if (v1.x1 < v2.x1 && v1.x2 < v2.x2) { // End of v1 covering start of v2
-      return [{
-        x1: v1.x1,
-        y1: v1.y1,
-        x2: v2.x1,
-        y2: v1.y1,
-      }];
-    }
-
-    if (v1.x1 >= v2.x1 && v1.x2 <= v2.x2) { // v2 completely covers v1
-      return [];
+    if (v1.x2 > v2.x1 && v2.x2 >= v1.x2) { // Start of v2 covering end of v1
+      return [{       //
+        x1: v1.x1,    //
+        y1: v1.y1,    //        2222222                   222
+        x2: v2.x1,    //   11111111         or     1111111111
+        y2: v1.y2,    //
+      }];             //
     }
 
     return [ // v1 completely covers v2
@@ -185,41 +195,30 @@ export function vectorSubtract (v1, v2) {
         x1: v1.x1,
         y1: v1.y1,
         x2: v2.x1,
-        y2: v1.y1,
-      },
-      {
+        y2: v1.y2,
+      },             //   11111111111
+      {              //       2222
         x1: v2.x2,
         y1: v1.y1,
         x2: v1.x2,
-        y2: v1.y1,
+        y2: v1.y2,
       },
     ];
-  } else {
+  } else {  // Perpendicular vectors
     if (isVertical(v1)) {
-      if (v2.x2 < v1.x1) { // v2 left of v1
-        return [v1];
-      }
-      if (v2.x1 > v1.x1) { // v2 right of v1
-        return [v1];
-      }
-      if (v2.y1 < v1.y1) { // v2 below of v1
-        return [v1];
-      }
-      if (v2.y1 > v1.y2) { // v2 above of v1
+      if (v2.x2 < v1.x1 || // v2 left of v1
+        v1.x1 < v2.x1 ||   // v1 left of v2
+        v2.y1 < v1.y1 ||   // v2 below of v1
+        v1.y2 < v2.y1) {   // v1 below of v1
         return [v1];
       }
 
       // They are crossing at exactly one square
-      if (v1.y1 === v2.y1) {// v2 covers start of v1 -> cut first square
-        return [{
-          x1: v1.x1,
-          y1: v1.y1 /*+ 1*/,
-          x2: v1.x1,
-          y2: v1.y2,
-        }]
+      if (v1.y2 - v1.y1 === 1) { // v1 is only one square and will be completely crossed out
+        return [];
       }
 
-      if (v1.y2 === v2.y1) {// v2 covers end of v1 -> cut last square
+      if (v1.y2 === v2.y1 + 0.5) {// v2 covers end of v1 -> cut last square
         return [{
           x1: v1.x1,
           y1: v1.y1,
@@ -228,49 +227,58 @@ export function vectorSubtract (v1, v2) {
         }]
       }
 
+      if (v1.y1 === v2.y1 - 0.5) {// v2 covers start of v1 -> cut first square
+        return [{
+          x1: v1.x1,
+          y1: v1.y1 + 1,
+          x2: v1.x2,
+          y2: v1.y2,
+        }]
+      }
+
       // Cut v1 in half
       return [
         {
           x1: v1.x1,
           y1: v1.y1,
-          x2: v1.x1,
-          y2: v2.y1 - 1,
+          x2: v1.x2,
+          y2: v2.y1 - 0.5,
         },
         {
           x1: v1.x1,
-          y1: v2.y1 + 1,
-          x2: v1.x1,
+          y1: v2.y1 + 0.5,
+          x2: v1.x2,
           y2: v1.y2,
         }
       ]
     } else {
-      if (v1.x2 < v2.x1) { // v1 left of v2
+      if (v1.y1 > v2.y2 || // v1 above of v2
+        v1.y1 < v2.y1 ||   // v1 below of v2
+        v1.x2 < v2.x1 ||   // v1 left of v2
+        v1.x1 > v2.x1) {   // v1 right of v2
         return [v1];
       }
-      if (v1.x1 > v2.x1) { // v1 right of v2
-        return [v1];
-      }
-      if (v1.y1 < v2.y1) { // v1 below of v2
-        return [v1];
-      }
-      if (v1.y1 > v2.y2) { // v1 above of v2
-        return [v1];
-      }
+
       // They are crossing at exactly one square
-      if (v1.x1 === v2.x1) {// v2 covers start of v1 -> cut first square
+      if (v1.x2 - v1.x1 === 1) { // v1 is only one square and will be completely crossed out
+        return [];
+      }
+
+
+      if (v1.x1 === v2.x1 - 0.5) { // v2 covers start of v1 -> cut first square
         return [{
-          x1: v1.x1 /*+ 1*/,
+          x1: v1.x1 + 1,
           y1: v1.y1,
           x2: v1.x2,
           y2: v1.y2,
         }]
       }
 
-      if (v1.x2 === v2.x2) {// v2 covers end of v1 -> cut last square
+      if (v1.x2 === v2.x2 + 0.5) {// v2 covers end of v1 -> cut last square
         return [{
           x1: v1.x1,
           y1: v1.y1,
-          x2: v2.x1 /*- 1*/,
+          x2: v2.x1 - 1,
           y2: v1.y2,
         }]
       }
@@ -279,12 +287,12 @@ export function vectorSubtract (v1, v2) {
       return [
         {
           x1: v1.x1,
-          y1: v2.y1,
-          x2: v2.x1 - 1,
+          y1: v1.y1,
+          x2: v2.x1 - 0.5,
           y2: v1.y2,
         },
         {
-          x1: v2.x1 + 1,
+          x1: v2.x1 + 0.5,
           y1: v1.y1,
           x2: v1.x2,
           y2: v1.y2,
@@ -345,20 +353,35 @@ export function generateOptimalVectors(moveVectors) {
   return nonOverlapVectors;
 }
 
+/**
+ * Generates a start vector to simulate that the starting tile is cleaned. Start position of {x: 3, y: 5}
+ * will generate the vector {x1: 3.5, y1: 3, x2: 3.5, y2: 4}
+ * @param startPos
+ * @returns {{x1: number, y1: number, x2: number, y2: number}}
+ */
+function generateStartVector(startPos) {
+  return {x1: startPos.x + 0.5, y1: startPos.y, x2: startPos.x + 0.5, y2: startPos.y + 1};
+}
 
 /**
  *
  * @param params [Object] Instruction for cleaning robot. Example:
  * {
- *  numberOfCommands: 2,
- *  startPosition: {10, 22},
- *  moves: [
- *    'E 2', 'N 1'
- *  ],
+ *    numberOfCommands: 2,
+ *    startPosition: {10, 22},
+ *    moves: ['E 2', 'N 1'],
  * }
+ * @returns {Number} Area cleaned
  */
 function runCleaningRobot(params) {
+  let moveVectors = relativeToAbsolute(params.startPosition, params.moves);
+  moveVectors = alignVectors(moveVectors);
+  moveVectors.push(generateStartVector(params.startPosition));
 
+  let nonOverlapVectors = generateOptimalVectors(moveVectors);
+  let cleanedArea = calculateArea(nonOverlapVectors);
+
+  return cleanedArea;
 }
 
 export default {
