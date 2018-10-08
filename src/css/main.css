@@ -1,0 +1,135 @@
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background: #f0f0f0;
+}
+
+.container {
+  margin: auto;
+  background: #fafafa;
+  width: 350px;
+  padding: 20px 100px;
+  position: relative;
+}
+
+h1, h2 {
+  color: #444;
+  font-weight: 100;
+  text-align: center;
+}
+
+h2 {
+  margin-top: 30px;
+  margin-bottom: 5px;
+}
+
+.start-pos-container {
+  text-align: center;
+}
+
+input[type="number"], input[type="text"] {
+  border-width: 0 0 1px 0;
+  border-color: #444;
+  background: none;
+  outline: none;
+  font-size: 16px;
+}
+input[type="number"] {
+  width: 70px;
+}
+
+table {
+  margin: auto;
+}
+
+th {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+input[type="radio"] {
+  display: none;
+}
+
+
+.compass {
+  position: relative;
+  height: 60px;
+  width: 60px;
+  border: 1px solid #cecece;
+  border-radius: 30px;
+  margin: 0 5px;
+}
+
+.compass > div {
+  position: absolute;
+}
+
+.compass .ccn {
+  top: 0;
+  left: 20px;
+}
+.compass .cce {
+  top: 20px;
+  right: 0;
+}
+.compass .ccs {
+  bottom: 0;
+  left: 20px;
+}
+.compass .ccw {
+  top: 20px;
+  left: 0;
+}
+
+.compass label {
+  background: #fff;
+  font-size: 13px;
+  width: 20px;
+  height: 20px;
+  display: block;
+  text-align: center;
+  line-height: 20px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.compass input:checked + label {
+  background: #77a;
+  color: #fff
+}
+
+.testrunner-link {
+    position: absolute;
+    right: 0;
+    bottom: -20px;
+    display: block;
+    font-size: 12px;
+    color: #777;
+}
+
+.buttons {
+  text-align: center;
+}
+
+.buttons input {
+  margin: 10px;
+  width: 100px;
+  background: #777;
+  border: 1px solid #fafafa;
+  color: #fff;
+  font-size: 12px;
+  height: 30px;
+  border-radius: 5px;
+}
+
+.buttons input:focus {
+  outline: none;
+}
+
+.buttons input[type="submit"] {
+  background: #686;
+}
+
+.result p {
+  text-align: center;
+}

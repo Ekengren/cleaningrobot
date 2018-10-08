@@ -12,6 +12,8 @@ Use list notation, and following prefixes:
 
 ### NEXT RELEASE
 
+- Feature: Added gui for robot parameter input. (be)
+- Bugfix: Updated build scripts. (be)
 - Refactor: Changed how vectors are handled. (be)
 - Feature: Added build watchers. (be)
 - Feature: Added first test. (be)

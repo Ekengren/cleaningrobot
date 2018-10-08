@@ -1,4 +1,4 @@
-import robot, {generateStartVector} from '../js/robot'
+import robot from '../js/robot'
 import { expect, vEq } from './test-utils'
 
 expect('robot to have function "relativeToAbsolute"', typeof robot.relativeToAbsolute === 'function');
