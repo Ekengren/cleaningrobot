@@ -1,9 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Robot Cleaner</title>
+  <meta charset="UTF-8">
+  <title>Robot Cleaner</title>
+  <link href="css/main.css" rel="stylesheet" type="text/css">
 </head>
 <body>
+<div class="container">
+  <h1>Robot Cleaner</h1>
+  <form action="javascript: void(0);">
+    <h2>Initial position</h2>
+    <p class="start-pos-container">
+      <label for="start-x">X</label>
+      <input type="number" id="start-x" size="6" max="100000" min="-100000">
+      <label for="start-y">Y</label>
+      <input type="number" id="start-y" size="6" max="100000" min="-100000">
+    </p>
+    <h2>Moves</h2>
+    <table id="move-table">
+      <thead>
+      <tr>
+        <th>Heading</th>
+        <th>Distance</th>
+      </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+    <p class="buttons">
+      <input type="button" value="Add row" id="add-row-button">
+      <input type="submit" value="Execute" id="execute-rows">
+    </p>
+  </form>
+  <div class="result" id="result"></div>
+  <a class="testrunner-link" href="testrunner.html">Go to unit test page</a>
+</div>
+<script src="js/main.js"></script>
+<script>
+  console.log('Usage: Run function "commenceCleaning" with a single object as argument.');
+  console.log('Example:');
+  console.log('commenceCleaning({');
+  console.log('  numberOfCommands: 2,');
+  console.log('  startPosition: "10 22",');
+  console.log('  moves: ["E 2", "N 1"]');
+  console.log('});');
+</script>
 </body>
 </html>
