@@ -353,27 +353,29 @@ export function generateOptimalVectors(moveVectors) {
   return nonOverlapVectors;
 }
 
+
 /**
  * Generates a start vector to simulate that the starting tile is cleaned. Start position of {x: 3, y: 5}
  * will generate the vector {x1: 3.5, y1: 3, x2: 3.5, y2: 4}
  * @param startPos
  * @returns {{x1: number, y1: number, x2: number, y2: number}}
  */
-function generateStartVector(startPos) {
+export function generateStartVector(startPos) {
   return {x1: startPos.x + 0.5, y1: startPos.y, x2: startPos.x + 0.5, y2: startPos.y + 1};
 }
 
+
 /**
+ * Simulation of cleaning robot.
  *
  * @param params [Object] Instruction for cleaning robot. Example:
  * {
- *    numberOfCommands: 2,
  *    startPosition: {10, 22},
  *    moves: ['E 2', 'N 1'],
  * }
  * @returns {Number} Area cleaned
  */
-function runCleaningRobot(params) {
+export function runCleaningRobot(params) {
   let moveVectors = relativeToAbsolute(params.startPosition, params.moves);
   moveVectors = alignVectors(moveVectors);
   moveVectors.push(generateStartVector(params.startPosition));
@@ -384,6 +386,38 @@ function runCleaningRobot(params) {
   return cleanedArea;
 }
 
+
+/**
+ * Terminal version with alternate input method for cleaning robot and some console output.
+ *
+ * @param params example:
+ * {
+ *  numberOfCommands: 2,
+ *  startPosition: '10 22',
+ *  moves: [
+ *    'E 2', 'N 1'
+ *  ],
+ * }
+ *
+ * Note that parameter numberOfCommands is not really needed
+ */
+function commenceCleaning(params) {
+  let startTime = new Date();
+  let result = runCleaningRobot({
+    startPosition: {
+      x: Number.parseInt(params.startPosition.split(' ')[0], 10),
+      y: Number.parseInt(params.startPosition.split(' ')[1], 10)
+    },
+    moves: params.moves,
+  });
+
+  console.log(`Total area cleaned: ${result}`);
+  console.log(`Compute time: ${new Date() - startTime}ms`);
+
+  return result;
+}
+
+
 export default {
   runCleaningRobot,
   relativeToAbsolute,
@@ -393,4 +427,7 @@ export default {
   vectorSubtract,
   subtractMultiple,
   generateOptimalVectors,
+  generateStartVector,
+  runCleaningRobot,
+  commenceCleaning,
 }
